@@ -1,0 +1,8 @@
+#ifndef STACK_H
+#define STACK_H
+typedef struct Stack Stack;
+
+Stack* new_stack(void);
+
+void delete_stack(Stack**, void (*) (void*));
+#endif
