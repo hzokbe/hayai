@@ -36,3 +36,8 @@ void delete_node(Node **node_ptr, void (*destructor)  (void *))
 
   *node_ptr = NULL;
 }
+
+Node* get_next_node(const Node* node)
+{
+  return node ? node->next_node : NULL;
+}
