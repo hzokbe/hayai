@@ -65,3 +65,17 @@ void* get_value(const Node* node)
 
   return NULL;
 }
+
+void* set_value(Node* node, void* value)
+{
+  if (!node)
+  {
+    return NULL;
+  }
+
+  void* temp = node->value;
+
+  node->value = value;
+
+  return temp;
+}

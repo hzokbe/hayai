@@ -11,4 +11,6 @@ Node* get_next_node(const Node*);
 Node* set_next_node(Node*, Node*);
 
 void* get_value(const Node*);
+
+void* set_value(Node*, void*);
 #endif
