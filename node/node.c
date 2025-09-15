@@ -4,14 +4,14 @@
 
 typedef struct Node
 {
-  void *value;
+  void* value;
 
-  Node *next_node;
+  Node* next_node;
 } Node;
 
-Node *new_node(void *value)
+Node* new_node(void *value)
 {
-  Node *n = malloc(sizeof(Node));
+  Node* n = malloc(sizeof(Node));
 
   if (!n)
   {
@@ -25,7 +25,7 @@ Node *new_node(void *value)
   return n;
 }
 
-void delete_node(Node **node_ptr, void (*destructor)  (void *))
+void delete_node(Node** node_ptr, void (*destructor)  (void *))
 {
   if (destructor)
   {
@@ -40,4 +40,18 @@ void delete_node(Node **node_ptr, void (*destructor)  (void *))
 Node* get_next_node(const Node* node)
 {
   return node ? node->next_node : NULL;
+}
+
+Node* set_next_node(Node* node, Node* next_node)
+{
+  if (!node)
+  {
+    return NULL;
+  }
+
+  Node* temp = node->next_node;
+
+  node->next_node = next_node;
+
+  return temp;
 }
