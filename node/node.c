@@ -25,7 +25,7 @@ Node *new_node(void *value)
   return n;
 }
 
-void delete_node(Node **node_ptr, void (*destructor)(void *))
+void delete_node(Node **node_ptr, void (*destructor)  (void *))
 {
   if (destructor)
   {
