@@ -1,8 +1,38 @@
 #include "node.h"
 
+#include <stdlib.h>
+
 typedef struct Node
 {
   void *value;
 
   Node *next_node;
 } Node;
+
+Node *new_node(void *value)
+{
+  Node *n = malloc(sizeof(Node));
+
+  if (!n)
+  {
+    return NULL;
+  }
+
+  n->value = value;
+
+  n->next_node = NULL;
+
+  return n;
+}
+
+void delete_node(Node **node_ptr, void (*destructor)(void *))
+{
+  if (destructor)
+  {
+    destructor((*node_ptr)->value);
+  }
+
+  free(*node_ptr);
+
+  *node_ptr = NULL;
+}
