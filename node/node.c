@@ -55,3 +55,13 @@ Node* set_next_node(Node* node, Node* next_node)
 
   return temp;
 }
+
+void* get_value(const Node* node)
+{
+  if (node)
+  {
+    return node->value;
+  }
+
+  return NULL;
+}
