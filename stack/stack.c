@@ -48,3 +48,16 @@ void delete_stack(Stack** stack_ptr, void (*destructor) (void*))
   *stack_ptr = NULL;
 }
 
+void push(Stack* stack, void* value)
+{
+  if (!stack)
+  {
+    return;
+  }
+
+  Node* top = new_node(value);
+
+  set_next_node(top, stack->top);
+
+  stack->top = top;
+}
