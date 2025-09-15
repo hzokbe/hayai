@@ -23,3 +23,28 @@ Stack* new_stack(void)
   return s;
 }
 
+void delete_stack(Stack** stack_ptr, void (*destructor) (void*))
+{
+  Stack* s = *stack_ptr;
+
+  if (s)
+  {
+    Node* top = s->top;
+
+    while (top)
+    {
+      Node* next_node = get_next_node(top);
+
+      destructor(get_value(top));
+
+      free(top);
+
+      top = next_node;
+    }
+  }
+
+  free(*stack_ptr);
+
+  *stack_ptr = NULL;
+}
+
