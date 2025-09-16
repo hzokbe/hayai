@@ -121,6 +121,7 @@ void test_new_stack(void)
   }
 
   Foo* f3 = malloc(sizeof(Foo));
+
   if (!f3)
   {
     free(f2->bar);
