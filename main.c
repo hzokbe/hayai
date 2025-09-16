@@ -3,7 +3,9 @@
 
 #include <stdlib.h>
 
-void delete_int(void*);
+typedef struct Foo Foo;
+
+void delete_foo(void*);
 
 void test_new_node(void);
 
@@ -18,68 +20,146 @@ int main(void)
   return 0;
 }
 
-void delete_int(void* value)
+typedef struct Foo
 {
+  char* bar;
+} Foo;
+
+void delete_foo(void* value)
+{
+  free(((Foo*) value)->bar);
+
   free(value);
 }
 
 void test_new_node(void)
 {
-  int* i = malloc(sizeof(int));
+  Foo* f = malloc(sizeof(Foo));
 
-  if (!i)
+  if (!f)
   {
     exit(1);
   }
 
-  Node* node = new_node(i);
+  f->bar = malloc(sizeof(char) * 10);
+
+  if (!f->bar)
+  {
+    free(f);
+
+    exit(1);
+  }
+
+  Node* node = new_node(f);
 
   if (!node)
   {
-    free(i);
+    free(f->bar);
+
+    free(f);
 
     exit(1);
   }
 
-  delete_node(&node, delete_int);
+  delete_node(&node, delete_foo);
 }
 
 void test_new_stack(void)
 {
   Stack* stack = new_stack();
 
-  int* a = malloc(sizeof(int));
-
-  if (!a)
+  if (!stack)
   {
     exit(1);
   }
 
-  int* b = malloc(sizeof(int));
+  Foo* f1 = malloc(sizeof(Foo));
 
-  if (!b)
+  if (!f1)
   {
-    free(a);
+    delete_stack(&stack, delete_foo);
 
     exit(1);
   }
 
-  int* c = malloc(sizeof(int));
+  f1->bar = malloc(10);
 
-  if (!c)
+  if (!f1->bar)
   {
-    free(a);
+    free(f1);
 
-    free(b);
+    delete_stack(&stack, delete_foo);
 
     exit(1);
   }
 
-  free(a);
+  Foo* f2 = malloc(sizeof(Foo));
 
-  free(b);
+  if (!f2)
+  {
+    free(f1->bar);
 
-  free(c);
+    free(f1);
 
-  delete_stack(&stack, delete_int);
+    delete_stack(&stack, delete_foo);
+
+    exit(1);
+  }
+
+  f2->bar = malloc(20);
+  if (!f2->bar)
+  {
+    free(f2);
+
+    free(f1->bar);
+
+    free(f1);
+
+    delete_stack(&stack, delete_foo);
+
+    exit(1);
+  }
+
+  Foo* f3 = malloc(sizeof(Foo));
+  if (!f3)
+  {
+    free(f2->bar);
+
+    free(f2);
+
+    free(f1->bar);
+
+    free(f1);
+
+    delete_stack(&stack, delete_foo);
+
+    exit(1);
+  }
+
+  f3->bar = malloc(sizeof(char) * 10);
+
+  if (!f3->bar)
+  {
+    free(f3);
+
+    free(f2->bar);
+
+    free(f2);
+
+    free(f1->bar);
+
+    free(f1);
+
+    delete_stack(&stack, delete_foo);
+
+    exit(1);
+  }
+
+  push(stack, f1);
+
+  push(stack, f2);
+
+  push(stack, f3);
+
+  delete_stack(&stack, delete_foo);
 }
