@@ -61,3 +61,13 @@ void push(Stack* stack, void* value)
 
   stack->top = top;
 }
+
+void* peek(Stack* stack)
+{
+  if (!stack)
+  {
+    return NULL;
+  }
+
+  return get_value(stack->top);
+}
