@@ -64,10 +64,24 @@ void push(Stack* stack, void* value)
 
 void* peek(Stack* stack)
 {
-  if (!stack)
+  if (!stack || !stack->top)
   {
     return NULL;
   }
 
   return get_value(stack->top);
+}
+
+void* pop(Stack* stack)
+{
+  if (!stack || !stack->top)
+  {
+    return NULL;
+  }
+
+  void* value = get_value(stack->top);
+
+  stack->top = get_next_node(stack->top);
+
+  return value;
 }

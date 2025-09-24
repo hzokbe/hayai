@@ -9,4 +9,6 @@ void delete_stack(Stack**, void (*) (void*));
 void push(Stack*, void*);
 
 void* peek(Stack*);
+
+void* pop(Stack*);
 #endif
