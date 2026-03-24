@@ -1,6 +1,7 @@
 package com.hzokbe.hayai.auth.service.user;
 
 import com.hzokbe.hayai.auth.dto.user.SignUpRequestDTO;
+import com.hzokbe.hayai.auth.dto.user.UserCreatedEventDTO;
 import com.hzokbe.hayai.auth.entity.user.UserEntity;
 import com.hzokbe.hayai.auth.exception.user.EmailAlreadyInUseException;
 import com.hzokbe.hayai.auth.exception.user.UsernameAlreadyInUseException;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.UUID;
 
@@ -26,6 +28,9 @@ class UserServiceTest {
 
     @Mock
     private UserEntityMapper mapper;
+
+    @Mock
+    private KafkaTemplate<String, UserCreatedEventDTO> kafkaTemplate;
 
     @InjectMocks
     private UserService service;
@@ -54,6 +59,8 @@ class UserServiceTest {
         assertEquals("username already in use", exception.getMessage());
 
         verify(repository, times(0)).save(any(UserEntity.class));
+
+        verify(kafkaTemplate, times(0)).send(anyString(), any(UserCreatedEventDTO.class));
     }
 
     @Test
@@ -67,6 +74,8 @@ class UserServiceTest {
         assertEquals("e-mail already in use", exception.getMessage());
 
         verify(repository, times(0)).save(any(UserEntity.class));
+
+        verify(kafkaTemplate, times(0)).send(anyString(), any(UserCreatedEventDTO.class));
     }
 
     @Test
@@ -77,8 +86,13 @@ class UserServiceTest {
 
         when(mapper.toEntity(dto)).thenReturn(user);
 
+        when(repository.save(any(UserEntity.class))).thenReturn(user);
+
         service.signUp(dto);
 
         verify(repository).save(user);
+
+        verify(kafkaTemplate, times(1)).send(anyString(), any(UserCreatedEventDTO.class));
     }
 }
+
