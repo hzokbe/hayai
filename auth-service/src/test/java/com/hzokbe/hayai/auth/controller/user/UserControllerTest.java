@@ -1,8 +1,11 @@
 package com.hzokbe.hayai.auth.controller.user;
 
 import com.hzokbe.hayai.auth.config.security.SecurityConfig;
+import com.hzokbe.hayai.auth.dto.user.SignInRequestDTO;
 import com.hzokbe.hayai.auth.dto.user.SignUpRequestDTO;
 import com.hzokbe.hayai.auth.exception.user.EmailAlreadyInUseException;
+import com.hzokbe.hayai.auth.exception.user.UserIsNotActiveException;
+import com.hzokbe.hayai.auth.exception.user.UserNotFoundException;
 import com.hzokbe.hayai.auth.exception.user.UsernameAlreadyInUseException;
 import com.hzokbe.hayai.auth.service.user.UserService;
 import org.junit.jupiter.api.Test;
@@ -61,5 +64,27 @@ class UserControllerTest {
                 .content("{\"username\": \"ayumu_kasuga\", \"email\": \"ayumu_kasuga@azumangadaioh.jp\", \"password\": \"ayumu!123\"}");
 
         mockMvc.perform(request).andExpect(status().isCreated());
+    }
+
+    @Test
+    public void signIn_shouldThrowException_whenUserNotFound() throws Exception {
+        doThrow(new UserNotFoundException("user not found")).when(service).signIn(any(SignInRequestDTO.class));
+
+        var request = post("/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\": \"ayumu_kasuga\", \"password\": \"ayumu!123\"}");
+
+        mockMvc.perform(request).andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void signIn_shouldThrowException_whenUserIsNotActive() throws Exception {
+        doThrow(new UserIsNotActiveException("user is not active")).when(service).signIn(any(SignInRequestDTO.class));
+
+        var request = post("/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\": \"ayumu_kasuga\", \"password\": \"ayumu!123\"}");
+
+        mockMvc.perform(request).andExpect(status().isUnauthorized());
     }
 }

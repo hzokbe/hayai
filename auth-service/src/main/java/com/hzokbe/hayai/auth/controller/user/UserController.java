@@ -1,5 +1,7 @@
 package com.hzokbe.hayai.auth.controller.user;
 
+import com.hzokbe.hayai.auth.dto.jwt.JWTResponseDTO;
+import com.hzokbe.hayai.auth.dto.user.SignInRequestDTO;
 import com.hzokbe.hayai.auth.dto.user.SignUpRequestDTO;
 import com.hzokbe.hayai.auth.service.user.UserService;
 import jakarta.validation.Valid;
@@ -22,5 +24,10 @@ public class UserController {
         service.signUp(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<JWTResponseDTO> signIn(@RequestBody @Valid SignInRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.signIn(dto));
     }
 }
