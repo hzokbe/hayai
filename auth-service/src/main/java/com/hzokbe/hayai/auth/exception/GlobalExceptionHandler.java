@@ -2,6 +2,8 @@ package com.hzokbe.hayai.auth.exception;
 
 import com.hzokbe.hayai.auth.dto.exception.ExceptionResponseDTO;
 import com.hzokbe.hayai.auth.exception.user.EmailAlreadyInUseException;
+import com.hzokbe.hayai.auth.exception.user.UserIsNotActiveException;
+import com.hzokbe.hayai.auth.exception.user.UserNotFoundException;
 import com.hzokbe.hayai.auth.exception.user.UsernameAlreadyInUseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -40,5 +42,19 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
 
         return new ExceptionResponseDTO(message);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ExceptionResponseDTO userNotFoundExceptionHandler(UserNotFoundException exception) {
+        return new ExceptionResponseDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler(UserIsNotActiveException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ExceptionResponseDTO userIsNotActiveExceptionHandler(UserIsNotActiveException exception) {
+        return new ExceptionResponseDTO(exception.getMessage());
     }
 }
